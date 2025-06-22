@@ -27,4 +27,4 @@ COPY --from=builder /home/gradle/app/build/libs/mmb-notification-service.jar /ap
 
 EXPOSE 8080 5005
 
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "/app/mmb-notification-service.jar"]
+ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006", "-jar", "/app/mmb-notification-service.jar"]
