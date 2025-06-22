@@ -65,6 +65,7 @@ services:
     container_name: ${NOTIFICATION_SERVICE_NAME}-mongo
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
+    command: mongod --port 27018
     volumes:
       - mongo_data:/data/db
     deploy:
