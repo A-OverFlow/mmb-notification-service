@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -29,7 +29,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation(kotlin("stdlib-jdk8"))
-	runtimeOnly("com.mysql:mysql-connector-j")
+
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	// ✅ WebSocket
@@ -46,11 +46,14 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-	// ✅ Jackson Kotlin module (선택적으로 JSON 직렬화 용이)
+	// Jackson Kotlin module (선택적으로 JSON 직렬화 용이)
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-	// ✅ openfeign
+	// openfeign
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+	// kafka
+	implementation("org.springframework.kafka:spring-kafka")
 }
 
 dependencyManagement {
@@ -64,7 +67,7 @@ tasks.withType<Test> {
 }
 
 tasks.bootJar {
-	archiveFileName.set("ms-msa-playground.jar")
+	archiveFileName.set("mmb-notification-service.jar")
 }
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 	kotlinOptions {

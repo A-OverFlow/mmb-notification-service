@@ -3,49 +3,30 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ${CHAT_SERVICE_NAME}
-    image: mumulbo/mmb-chat-service:IMAGE_TAG_PLACEHOLDER
+    container_name: ${NOTIFICATION_SERVICE_NAME}
+    image: mumulbo/mmb-notification-service:IMAGE_TAG_PLACEHOLDER
     env_file:
       - .env
     ports:
-      - "${SERVICE_PORT}:8084"
+      - "${SERVICE_PORT}:8087"
       - "5005:5005"
     networks:
       - external-net
     depends_on:
-      - db
       - mongo
-      - redis-chat
+      - kafka
     logging:
       driver: json-file
       options:
-          max-size: "10m"
-          max-file: "5"
+        max-size: "10m"
+        max-file: "5"
 
-  db:
-    image: mysql:8.0.36
-    container_name: ${CHAT_SERVICE_NAME}-mysql
-    environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: root
-    command: --default-authentication-plugin=mysql_native_password
-    ports:
-      - "3308:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
-    networks:
-      - external-net
-
-  redis-chat:
+  redis-notification:
     image: redis:7.2
-    container_name: ${CHAT_SERVICE_NAME}-redis
+    container_name: ${NOTIFICATION_SERVICE_NAME}-redis
     ports:
-      - "6380:6380"
-    command: redis-server --port 6380
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    command: redis-server --port 6381
     deploy:
       resources:
         limits:
@@ -54,9 +35,34 @@ services:
     networks:
       - external-net
 
+  zookeeper:
+    image: bitnami/zookeeper:3.9
+    container_name: mmb-zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    networks:
+      - external-net
+
+  kafka:
+    image: bitnami/kafka:3.6
+    container_name: mmb-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9092:9092"
+    networks:
+      - external-net
+
   mongo:
     image: mongo:6.0
-    container_name: ${CHAT_SERVICE_NAME}-mongo
+    container_name: ${NOTIFICATION_SERVICE_NAME}-mongo
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
     volumes:

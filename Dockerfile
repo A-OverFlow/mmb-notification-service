@@ -23,8 +23,8 @@ RUN gradle clean bootJar --no-daemon
 FROM amazoncorretto:17-alpine
 
 # JAR 파일 복사
-COPY --from=builder /home/gradle/app/build/libs/ms-msa-playground.jar /app/ms-msa-playground.jar
+COPY --from=builder /home/gradle/app/build/libs/mmb-notification-service.jar /app/mmb-notification-service.jar
 
 EXPOSE 8080 5005
 
-ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "/app/ms-msa-playground.jar"]
+ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "/app/mmb-notification-service.jar"]

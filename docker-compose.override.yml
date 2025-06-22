@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: demo-app:local
+    image: mumulbo/mmb-notification-service
     volumes:
       - ./:/workspace
     working_dir: /workspace
