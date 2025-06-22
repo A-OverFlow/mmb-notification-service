@@ -26,7 +26,7 @@ services:
     container_name: ${NOTIFICATION_SERVICE_NAME}-redis
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
-    command: redis-server --port 6381
+    command: redis-server --port 6382
     deploy:
       resources:
         limits:
