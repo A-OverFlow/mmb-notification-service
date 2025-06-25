@@ -11,9 +11,15 @@ class NotificationWebSocketHandler(
 ) : TextWebSocketHandler() {
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
-        val userId = session.uri?.query?.split("=")?.getOrNull(1)?.toLongOrNull()
+        val userId = session.uri.query
+            ?.split("&")
+            ?.map { it.split("=") }
+            ?.associate { it[0] to it.getOrNull(1) }
+            ?.get("userId")
+
+
         if (userId != null) {
-            sessionManager.register(userId, session)
+            sessionManager.register(userId.toLong(), session)
             println("✅ WebSocket 연결 성공: sessionId=${session.id}, userId=$userId")
         } else {
             println("❌ userId 없음. 연결 종료")
